@@ -1,0 +1,61 @@
+{
+  "entities": {
+    "userProfile": {
+      "title": "User Profile",
+      "description": "User profile containing registration and subscription details.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "email": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "displayName": { "type": "string" },
+        "isPremium": { "type": "boolean" }
+      },
+      "required": ["userId", "email"]
+    },
+    "resume": {
+      "title": "Resume Document",
+      "description": "A resume analyzed by the AI containing metrics and suggestions.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "resumeText": { "type": "string" },
+        "jobTarget": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "score": { "type": "integer" },
+        "title": { "type": "string" },
+        "analysis": { "type": "object" }
+      },
+      "required": ["id", "userId", "resumeText", "createdAt", "score"]
+    },
+    "invoice": {
+      "title": "Invoice Details",
+      "description": "Purchased plan invoices which users can view and download.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "invoiceNo": { "type": "string" },
+        "amount": { "type": "string" },
+        "date": { "type": "string" },
+        "email": { "type": "string" }
+      },
+      "required": ["id", "userId", "invoiceNo", "amount", "date", "email"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "userProfile",
+      "description": "Root endpoint for user specific configurations"
+    },
+    "/users/{userId}/resumes/{resumeId}": {
+      "schema": "resume",
+      "description": "Saves all analyzed resumes for history lookup"
+    },
+    "/users/{userId}/invoices/{invoiceId}": {
+      "schema": "invoice",
+      "description": "User digital receipts for download invoices page"
+    }
+  }
+}

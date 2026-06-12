@@ -1,0 +1,69 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. Global safety net - Default deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Global helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // 2. User Profiles Collection
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create, update: if isOwner(userId)
+        && incoming().userId == userId
+        && incoming().email is string
+        && incoming().email.size() <= 200;
+      allow delete: if false;
+
+      // 3. User Resumes Sub-Collection
+      match /resumes/{resumeId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId)
+          && incoming().userId == userId
+          && incoming().id == resumeId
+          && incoming().resumeText is string
+          && incoming().resumeText.size() <= 100000
+          && incoming().score is int
+          && incoming().score >= 0 && incoming().score <= 100;
+        allow update: if isOwner(userId)
+          && incoming().userId == userId
+          && incoming().score is int
+          && incoming().resumeText is string;
+        allow delete: if isOwner(userId);
+      }
+
+      // 4. User Invoices Sub-Collection
+      match /invoices/{invoiceId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId)
+          && incoming().userId == userId
+          && incoming().id == invoiceId
+          && incoming().invoiceNo is string
+          && incoming().amount is string;
+        allow update: if false;
+        allow delete: if false;
+      }
+    }
+  }
+}

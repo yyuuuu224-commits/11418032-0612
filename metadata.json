@@ -1,0 +1,6 @@
+{
+  "name": "SmartResume 智慧履歷分析助手",
+  "description": "SmartResume 是一款結合卓越 AI 技術的智慧履歷分析與優化系統。透過專業儀表板、多維度評分、深度優化建議以及模擬面試生成，助您打造黃金履歷取得夢想 Offer。",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
