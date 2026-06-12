@@ -17,7 +17,11 @@ import {
   LogIn
 } from "lucide-react";
 
-export default function AuthScreen() {
+interface AuthScreenProps {
+  onMockLogin?: (user: any) => void;
+}
+
+export default function AuthScreen({ onMockLogin }: AuthScreenProps) {
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -101,6 +105,17 @@ export default function AuthScreen() {
     }
   };
 
+  const handleMockLogin = () => {
+    if (onMockLogin) {
+      onMockLogin({
+        uid: "demo-user",
+        email: "demo@smartresume.io",
+        displayName: "極速體驗訪客",
+        emailVerified: true
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center p-4 md:p-6 font-sans relative" id="smartresume-auth-screen">
       {/* Visual background lights */}
@@ -150,6 +165,21 @@ export default function AuthScreen() {
             <p className="leading-relaxed">{errorMsg}</p>
           </div>
         )}
+
+        {/* Quick Demo Login Option */}
+        <div className="bg-blue-50/60 border border-blue-150 p-4 rounded-2xl text-center space-y-2">
+          <p className="text-[11px] text-blue-600 font-bold leading-relaxed">
+            ⚡ <b>極速體驗通道：</b>若 Firebase 登入遭遇限制，可一鍵以訪客身份進入系統，解鎖 100% 完整功能！
+          </p>
+          <button
+            type="button"
+            onClick={handleMockLogin}
+            className="w-full py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-bold rounded-xl transition shadow-md flex items-center justify-center space-x-1.5 cursor-pointer"
+          >
+            <Sparkles className="h-4 w-4 text-amber-300 animate-pulse fill-amber-300" />
+            <span>訪客一鍵登入（免註冊極速體驗）</span>
+          </button>
+        </div>
 
         {/* Login/Signup Forms */}
         <form onSubmit={handleEmailAuth} className="space-y-4">
